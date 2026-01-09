@@ -1,0 +1,58 @@
+import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/features/auth/presentation/pages/login_screen.dart';
+import 'package:activity/features/bills/presentation/pages/split_bill_flow.dart';
+import 'package:activity/features/friends/presentation/pages/create_group_screen.dart';
+import 'package:activity/features/home/presentation/pages/home_screen.dart';
+import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
+import 'package:activity/features/profile/presentation/pages/profile_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const ProviderScope(child: ActivityApp()));
+}
+
+class ActivityApp extends StatelessWidget {
+  const ActivityApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Activity Tracker',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      routerConfig: _router,
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+final _router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+    GoRoute(
+      path: '/split-bill',
+      builder: (context, state) => const SplitBillFlow(),
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/create-group',
+      builder: (context, state) => const CreateGroupScreen(),
+    ),
+    GoRoute(
+      path: '/walkthrough',
+      builder: (context, state) => const WalkthroughScreen(),
+    ),
+  ],
+);

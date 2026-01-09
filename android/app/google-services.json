@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125856163065",
+    "project_id": "activitytracker-fbcb3",
+    "storage_bucket": "activitytracker-fbcb3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125856163065:android:e402a3076cf3927ac32e28",
+        "android_client_info": {
+          "package_name": "com.kksystems.activity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKD60pDAkssq9scDUSw2I0oo-M20-Bg0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
