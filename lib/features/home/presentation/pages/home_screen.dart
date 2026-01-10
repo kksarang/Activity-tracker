@@ -88,7 +88,7 @@ class HomeScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(24),
               children: [
                 const SizedBox(height: 10),
-                _buildBalanceCard(currentBalance, totalExpense),
+                _buildBalanceCard(context, currentBalance, totalExpense),
                 const SizedBox(height: 32),
                 _buildActionButtons(context, isDark),
                 const SizedBox(height: 32),
@@ -176,72 +176,128 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBalanceCard(double balance, double expense) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: AppTheme.meshGradientDecoration.copyWith(
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryPurple.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Total Balance',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+  Widget _buildBalanceCard(
+    BuildContext context,
+    double balance,
+    double expense,
+  ) {
+    // Determine budget status for the expanded card view (mocked here or pulled from provider)
+    // For the home card, we keep it simple but interactive.
+    final remainingDays = 12; // Mock
+
+    return GestureDetector(
+      onTap: () => context.push('/daily-tracker'),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: AppTheme.meshGradientDecoration.copyWith(
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryPurple.withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Account Balance',
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.6),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '₹${balance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Outfit',
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '₹${balance.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Outfit',
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Insight / Budget Mock
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.mint.withOpacity(
+                  0.8,
+                ), // Greenish for budget info
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.tips_and_updates,
+                    size: 20,
+                    color: Colors.black87,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'You\'re budgeted for the next ',
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 13,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '$remainingDays days',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: '...'),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  shape: BoxShape.circle,
+            ),
+
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildCardStat('Income', '₹25,000', Colors.green),
+                _buildCardStat(
+                  'Expense',
+                  '₹${expense.toStringAsFixed(2)}',
+                  Colors.redAccent,
                 ),
-                child: const Icon(Icons.more_horiz, color: Colors.black54),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildCardStat('Income', '₹25,000', Colors.green),
-              _buildCardStat(
-                'Expense',
-                '₹${expense.toStringAsFixed(2)}',
-                Colors.redAccent,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
