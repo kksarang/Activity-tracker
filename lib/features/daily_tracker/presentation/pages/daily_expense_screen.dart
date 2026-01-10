@@ -51,10 +51,7 @@ class DailyExpenseScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.bar_chart_rounded),
             onPressed: () {
-              // Analytics placeholder
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Analytics Flow Coming Soon')),
-              );
+              context.push('/analytics');
             },
           ),
         ],
