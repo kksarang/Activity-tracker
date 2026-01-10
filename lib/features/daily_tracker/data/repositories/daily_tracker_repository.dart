@@ -2,32 +2,7 @@ import 'package:activity/features/daily_tracker/domain/models/expense.dart';
 
 class DailyTrackerRepository {
   // In-memory mock storage
-  final List<Expense> _expenses = [
-    Expense(
-      title: 'Spotify Subscription',
-      amount: 49,
-      date: DateTime.now(),
-      category: ExpenseCategory.entertainment,
-    ),
-    Expense(
-      title: 'Grocery',
-      amount: 240,
-      date: DateTime.now(),
-      category: ExpenseCategory.food,
-    ),
-    Expense(
-      title: 'Travel',
-      amount: 120,
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      category: ExpenseCategory.travel,
-    ),
-    Expense(
-      title: 'Lunch',
-      amount: 92,
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      category: ExpenseCategory.food,
-    ),
-  ];
+  final List<Expense> _expenses = [];
 
   Future<List<Expense>> getExpenses() async {
     // Simulate network delay
