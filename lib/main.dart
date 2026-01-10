@@ -2,6 +2,7 @@ import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/auth/presentation/pages/login_screen.dart';
 import 'package:activity/features/bills/presentation/pages/split_bill_flow.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/add_expense_screen.dart';
+import 'package:activity/features/daily_tracker/presentation/pages/analytics_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/daily_expense_screen.dart';
 import 'package:activity/features/friends/presentation/pages/create_group_screen.dart';
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
@@ -69,6 +70,10 @@ final _router = GoRouter(
           return FadeTransition(opacity: animation, child: child);
         },
       ),
+    ),
+    GoRoute(
+      path: '/analytics',
+      builder: (context, state) => const AnalyticsScreen(),
     ),
   ],
 );
