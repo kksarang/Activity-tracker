@@ -216,8 +216,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (value, meta) {
-                if (value < 0 || value >= dayLabels.length)
+                if (value < 0 || value >= dayLabels.length) {
                   return const SizedBox();
+                }
                 return Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
