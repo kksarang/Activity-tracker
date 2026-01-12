@@ -1,13 +1,17 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final userAsync = ref.watch(authStateProvider);
+    final user = userAsync.value;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -37,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.mint.withOpacity(0.2),
+                color: AppColors.mint.withValues(alpha: 0.2),
                 boxShadow: const [
                   BoxShadow(blurRadius: 100, color: AppColors.mint),
                 ],
@@ -62,14 +66,15 @@ class ProfileScreen extends StatelessWidget {
                           border: Border.all(color: Colors.white, width: 4),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
                           ],
-                          image: const DecorationImage(
+                          image: DecorationImage(
                             image: NetworkImage(
-                              'https://i.pravatar.cc/300?u=a042581f4e29026024d',
+                              user?.photoUrl ??
+                                  'https://i.pravatar.cc/300?u=a042581f4e29026024d',
                             ),
                             fit: BoxFit.cover,
                           ),
@@ -77,16 +82,41 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Sarang R',
+                        user?.name ?? 'Guest User',
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        'sarang@example.com',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: isDark ? Colors.white60 : Colors.black54,
+                      if (user?.email != null && user!.email.isNotEmpty)
+                        Text(
+                          user.email,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: isDark ? Colors.white60 : Colors.black54,
+                              ),
                         ),
-                      ),
+                      if (user?.isAnonymous ?? false)
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.orangeAccent.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.orangeAccent.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          child: Text(
+                            'Guest Account',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -129,16 +159,40 @@ class ProfileScreen extends StatelessWidget {
                 _buildSettingsTile(context, isDark, Icons.security, 'Security'),
 
                 const SizedBox(height: 40),
+
+                // Log Out Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton.icon(
-                    onPressed: () => context.go('/'),
+                    onPressed: () async {
+                      await ref.read(authControllerProvider.notifier).signOut();
+                      if (context.mounted) context.go('/');
+                    },
                     icon: const Icon(Icons.logout),
                     label: const Text('Log Out'),
                     style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primaryPurple,
+                      side: const BorderSide(color: AppColors.primaryPurple),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Delete Account Button (User Request)
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: TextButton.icon(
+                    onPressed: () => _showDeleteAccountDialog(context, ref),
+                    icon: const Icon(Icons.delete_forever_rounded),
+                    label: const Text('Delete Account'),
+                    style: TextButton.styleFrom(
                       foregroundColor: Colors.redAccent,
-                      side: const BorderSide(color: Colors.redAccent),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -180,6 +234,56 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _showDeleteAccountDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Account?'),
+        content: const Text(
+          'This action is irreversible. All your data, including activity history and wallet balance, will be permanently deleted.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.of(context).pop(); // Close dialog
+
+              // Trigger delete
+              try {
+                await ref.read(authControllerProvider.notifier).deleteAccount();
+                if (context.mounted) {
+                  context.go('/'); // Navigate to login
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Account deleted successfully'),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to delete account: $e')),
+                  );
+                }
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSettingsTile(
     BuildContext context,
     bool isDark,
@@ -192,13 +296,13 @@ class ProfileScreen extends StatelessWidget {
       decoration: AppTheme.glassDecoration(isDark: isDark, radius: 16).copyWith(
         color: isDark
             ? AppColors.darkGlassOverlay
-            : Colors.white.withOpacity(0.8),
+            : Colors.white.withValues(alpha: 0.8),
       ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.primaryPurple.withOpacity(0.1),
+            color: AppColors.primaryPurple.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: AppColors.primaryPurple, size: 20),

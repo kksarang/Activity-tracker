@@ -44,7 +44,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryPurple.withOpacity(0.15),
+                color: AppColors.primaryPurple.withValues(alpha: 0.15),
                 boxShadow: const [
                   BoxShadow(blurRadius: 100, color: AppColors.primaryPurple),
                 ],
@@ -77,12 +77,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             Icon(
               Icons.bar_chart_rounded,
               size: 64,
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.grey.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
               'No data to display',
-              style: TextStyle(color: Colors.grey.withOpacity(0.5)),
+              style: TextStyle(color: Colors.grey.withValues(alpha: 0.5)),
             ),
           ],
         ),
@@ -110,7 +110,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 .copyWith(
                   color: isDark
                       ? AppColors.darkGlassOverlay
-                      : Colors.white.withOpacity(0.8),
+                      : Colors.white.withValues(alpha: 0.8),
                 ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 .copyWith(
                   color: isDark
                       ? AppColors.darkGlassOverlay
-                      : Colors.white.withOpacity(0.8),
+                      : Colors.white.withValues(alpha: 0.8),
                 ),
             child: Column(
               children: [
@@ -262,8 +262,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   show: true,
                   toY: yTarget,
                   color: isDark
-                      ? Colors.white.withOpacity(0.05)
-                      : Colors.grey.withOpacity(0.1),
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.grey.withValues(alpha: 0.1),
                 ),
               ),
             ],
@@ -399,7 +399,7 @@ class _Badge extends StatelessWidget {
         border: Border.all(color: borderColor, width: 2),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(.5),
+            color: Colors.black.withValues(alpha: .5),
             offset: const Offset(3, 3),
             blurRadius: 3,
           ),

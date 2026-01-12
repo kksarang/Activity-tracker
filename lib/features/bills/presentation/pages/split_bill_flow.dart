@@ -77,7 +77,7 @@ class _SplitBillFlowState extends ConsumerState<SplitBillFlow> {
             icon: const Icon(Icons.close, color: Colors.grey),
             onPressed: () {
               ref.read(splitBillProvider.notifier).reset();
-              context.pop();
+              context.go('/home');
             },
           ),
         ],

@@ -23,7 +23,7 @@ class AddFriendBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -49,7 +49,7 @@ class AddFriendBottomSheet extends StatelessWidget {
                 .copyWith(
                   color: isDark
                       ? const Color(0xFF2C2C2E)
-                      : Colors.grey.withOpacity(0.1),
+                      : Colors.grey.withValues(alpha: 0.1),
                   border: Border.all(color: Colors.transparent),
                 ),
             child: TextField(

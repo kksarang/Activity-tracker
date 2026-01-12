@@ -64,10 +64,10 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryPurple.withOpacity(0.3),
+                color: AppColors.primaryPurple.withValues(alpha: 0.3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryPurple.withOpacity(0.4),
+                    color: AppColors.primaryPurple.withValues(alpha: 0.4),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -83,10 +83,10 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.peach.withOpacity(0.3),
+                color: AppColors.peach.withValues(alpha: 0.3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.peach.withOpacity(0.4),
+                    color: AppColors.peach.withValues(alpha: 0.4),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -124,14 +124,14 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                                   ).copyWith(
                                     color: isDark
                                         ? AppColors.darkGlassOverlay
-                                        : Colors.white.withOpacity(0.5),
+                                        : Colors.white.withValues(alpha: 0.5),
                                   ),
                               child: Center(
                                 child: Icon(
                                   Icons.receipt_long_rounded,
                                   size: 100,
-                                  color: AppColors.primaryPurple.withOpacity(
-                                    0.5,
+                                  color: AppColors.primaryPurple.withValues(
+                                    alpha: 0.5,
                                   ),
                                 ),
                               ),
@@ -178,7 +178,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                             decoration: BoxDecoration(
                               color: _currentPage == index
                                   ? AppColors.primaryPurple
-                                  : Colors.grey.withOpacity(0.3),
+                                  : Colors.grey.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -205,7 +205,9 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryPurple.withOpacity(0.4),
+                                color: AppColors.primaryPurple.withValues(
+                                  alpha: 0.4,
+                                ),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),

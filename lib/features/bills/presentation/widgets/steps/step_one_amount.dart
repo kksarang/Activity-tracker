@@ -99,9 +99,9 @@ class _StepOneAmountState extends ConsumerState<StepOneAmount> {
             onChanged: _onTitleChanged,
             decoration: InputDecoration(
               hintText: 'Dinner at Marina Walk',
-              hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
+              hintStyle: TextStyle(color: Colors.grey.withValues(alpha: 0.5)),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
               ),
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: AppColors.primaryPurple),
