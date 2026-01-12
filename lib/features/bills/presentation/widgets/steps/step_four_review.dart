@@ -1,6 +1,8 @@
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/bills/presentation/providers/split_bill_provider.dart';
 import 'package:activity/features/home/presentation/providers/activity_provider.dart';
+import 'package:activity/features/shared/domain/models/expense_model.dart'
+    as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -135,7 +137,25 @@ class StepFourReview extends ConsumerWidget {
             child: FilledButton(
               onPressed: () {
                 // ADDED: Save to Activity Provider
-                ref.read(activityProvider.notifier).addBill(state);
+                final expense = shared.ExpenseModel(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                  title: state.title,
+                  amount: state.totalAmount,
+                  type: shared.TransactionType.expense,
+                  date: DateTime.now().millisecondsSinceEpoch,
+                  categoryId: 'split_bill',
+                  categoryName: 'Split Bill',
+                  payerId: 'currentUser', // Mock
+                  createdBy: 'currentUser', // Mock
+                  splitType: state.splitType == SplitType.equal
+                      ? shared.SplitType.equal
+                      : shared
+                            .SplitType
+                            .adjustment, // Map custom to adjustment/exact
+                  participants: state.participants.map((u) => u.id).toList(),
+                );
+
+                ref.read(activityProvider.notifier).addTransaction(expense);
 
                 // Show Success Dialog then finish
                 showDialog(

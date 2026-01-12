@@ -12,6 +12,8 @@ import 'package:activity/features/profile/presentation/pages/profile_screen.dart
 import 'package:activity/features/splash/presentation/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:activity/features/home/presentation/pages/scan_simulation_screen.dart';
+import 'package:activity/features/home/presentation/pages/smart_action_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -69,17 +71,41 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/add-expense',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const AddExpenseScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
+      pageBuilder: (context, state) {
+        final isIncome = state.extra as bool? ?? false;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: AddExpenseScreen(isIncome: isIncome),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/analytics',
       builder: (context, state) => const AnalyticsScreen(),
+    ),
+    GoRoute(
+      path: '/smart-action',
+      pageBuilder: (context, state) {
+        final actionType = state.extra as SmartActionType;
+        return CustomTransitionPage(
+          child: SmartActionScreen(actionType: actionType),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/scan-simulation',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: const ScanSimulationScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     ),
   ],
 );
