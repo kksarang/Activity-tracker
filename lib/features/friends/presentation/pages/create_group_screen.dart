@@ -55,7 +55,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryPurple.withOpacity(0.1),
+                      color: AppColors.primaryPurple.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(
@@ -74,7 +74,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                           ).copyWith(
                             color: isDark
                                 ? AppColors.darkGlassOverlay
-                                : Colors.grey.withOpacity(0.05),
+                                : Colors.grey.withValues(alpha: 0.05),
                             border: Border.all(color: Colors.transparent),
                           ),
                       child: TextField(
@@ -125,7 +125,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                               radius: 16,
                             ).copyWith(
                               color: isSelected
-                                  ? AppColors.primaryPurple.withOpacity(0.1)
+                                  ? AppColors.primaryPurple.withValues(alpha: 0.1)
                                   : (isDark
                                         ? AppColors.darkGlassOverlay
                                         : Colors.white),

@@ -1,6 +1,5 @@
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/bills/presentation/providers/split_bill_provider.dart';
-import 'package:activity/features/friends/domain/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -72,7 +71,7 @@ class _StepThreeSplitState extends ConsumerState<StepThreeSplit> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? const Color(0xFF2C2C2E)
-                      : Colors.grey.withOpacity(0.1),
+                      : Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(

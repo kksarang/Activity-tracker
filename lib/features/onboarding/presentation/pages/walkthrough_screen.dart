@@ -1,6 +1,8 @@
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WalkthroughScreen extends StatefulWidget {
   const WalkthroughScreen({super.key});
@@ -18,22 +20,40 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
       'title': 'Split Bill with\nFriends & Family',
       'description':
           'Manage your bills with your friends more easily with just this application.',
-      'image':
-          'https://i.ibb.co/nj0Xh3Z/split-bill-illustration.png', // Placeholder
+      'lottie':
+          'https://assets5.lottiefiles.com/packages/lf20_5w2szn.json', // Split/Group
+      'fallbackIcon': 'group_add_rounded',
     },
     {
       'title': 'Track Your\nExpenses',
       'description':
           'Keep track of your daily expenses and see where your money goes.',
-      'image': 'https://i.ibb.co/5GzXy0w/track-expenses.png', // Placeholder
+      'lottie':
+          'https://assets9.lottiefiles.com/packages/lf20_sF7xnR.json', // Analysis/Chart
+      'fallbackIcon': 'bar_chart_rounded',
     },
     {
       'title': 'Easy Payments',
       'description':
           'Settle up with friends instantly using integrated payment options.',
-      'image': 'https://i.ibb.co/vz1Xy0w/easy-payments.png', // Placeholder
+      'lottie':
+          'https://assets3.lottiefiles.com/packages/lf20_w51pcehl.json', // Payment
+      'fallbackIcon': 'credit_card_rounded',
     },
   ];
+
+  IconData _getIconData(String name) {
+    switch (name) {
+      case 'group_add_rounded':
+        return Icons.group_add_rounded;
+      case 'bar_chart_rounded':
+        return Icons.bar_chart_rounded;
+      case 'credit_card_rounded':
+        return Icons.credit_card_rounded;
+      default:
+        return Icons.image_not_supported_rounded;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +84,10 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryPurple.withOpacity(0.3),
+                color: AppColors.primaryPurple.withValues(alpha: 0.3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryPurple.withOpacity(0.4),
+                    color: AppColors.primaryPurple.withValues(alpha: 0.4),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -83,10 +103,10 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.peach.withOpacity(0.3),
+                color: AppColors.peach.withValues(alpha: 0.3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.peach.withOpacity(0.4),
+                    color: AppColors.peach.withValues(alpha: 0.4),
                     blurRadius: 100,
                     spreadRadius: 20,
                   ),
@@ -113,7 +133,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // Illustration Placeholder
+                            // Lottie / Illustration
                             Container(
                               height: 300,
                               width: double.infinity,
@@ -124,15 +144,41 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                                   ).copyWith(
                                     color: isDark
                                         ? AppColors.darkGlassOverlay
-                                        : Colors.white.withOpacity(0.5),
+                                        : Colors.white.withValues(alpha: 0.5),
                                   ),
                               child: Center(
-                                child: Icon(
-                                  Icons.receipt_long_rounded,
-                                  size: 100,
-                                  color: AppColors.primaryPurple.withOpacity(
-                                    0.5,
-                                  ),
+                                child: Lottie.network(
+                                  _pages[index]['lottie']!,
+                                  height: 250,
+                                  width: 250,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    // Fallback when Offline or URL failed
+                                    return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          _getIconData(
+                                            _pages[index]['fallbackIcon']!,
+                                          ),
+                                          size: 80,
+                                          color: AppColors.primaryPurple
+                                              .withValues(alpha: 0.5),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'Animation offline',
+                                          style: TextStyle(
+                                            color: isDark
+                                                ? Colors.white38
+                                                : Colors.black26,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -178,7 +224,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                             decoration: BoxDecoration(
                               color: _currentPage == index
                                   ? AppColors.primaryPurple
-                                  : Colors.grey.withOpacity(0.3),
+                                  : Colors.grey.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -187,14 +233,21 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
 
                       // Next / Get Started Button
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           if (_currentPage < _pages.length - 1) {
                             _pageController.nextPage(
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
                           } else {
-                            context.go('/home'); // Or /login if auth needed
+                            // On Finish, mark as seen and go to Login
+                            final prefs = await SharedPreferences.getInstance();
+                            if (!context.mounted) return;
+
+                            await prefs.setBool('seenWalkthrough', true);
+                            if (!context.mounted) return;
+
+                            context.go('/');
                           }
                         },
                         child: Container(
@@ -205,7 +258,9 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryPurple.withOpacity(0.4),
+                                color: AppColors.primaryPurple.withValues(
+                                  alpha: 0.4,
+                                ),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),

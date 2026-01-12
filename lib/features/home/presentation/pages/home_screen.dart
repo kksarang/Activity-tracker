@@ -41,7 +41,7 @@ class HomeScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               color: isDark
                   ? AppColors.darkGlassOverlay
-                  : Colors.white.withOpacity(0.5),
+                  : Colors.white.withValues(alpha: 0.5),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.notifications_none_rounded, size: 24),
@@ -59,7 +59,7 @@ class HomeScreen extends ConsumerWidget {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryPurple.withOpacity(0.2),
+                color: AppColors.primaryPurple.withValues(alpha: 0.2),
                 image: null,
                 boxShadow: const [
                   BoxShadow(blurRadius: 100, color: AppColors.primaryPurple),
@@ -75,7 +75,7 @@ class HomeScreen extends ConsumerWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.softPink.withOpacity(0.2),
+                color: AppColors.softPink.withValues(alpha: 0.2),
                 boxShadow: const [
                   BoxShadow(blurRadius: 100, color: AppColors.softPink),
                 ],
@@ -114,13 +114,13 @@ class HomeScreen extends ConsumerWidget {
                           Icon(
                             Icons.history,
                             size: 48,
-                            color: Colors.grey.withOpacity(0.5),
+                            color: Colors.grey.withValues(alpha: 0.5),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'No recent activity',
                             style: TextStyle(
-                              color: Colors.grey.withOpacity(0.8),
+                              color: Colors.grey.withValues(alpha: 0.8),
                               fontSize: 16,
                             ),
                           ),
@@ -194,7 +194,7 @@ class HomeScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primaryPurple.withOpacity(0.3),
+              color: AppColors.primaryPurple.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -212,7 +212,7 @@ class HomeScreen extends ConsumerWidget {
                     Text(
                       'Account Balance',
                       style: TextStyle(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withValues(alpha: 0.6),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -231,7 +231,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.all(8),
@@ -249,8 +249,8 @@ class HomeScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.mint.withOpacity(
-                  0.8,
+                color: AppColors.mint.withValues(
+                  alpha: 0.8,
                 ), // Greenish for budget info
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -308,7 +308,7 @@ class HomeScreen extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -324,7 +324,7 @@ class HomeScreen extends ConsumerWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 fontSize: 12,
               ),
             ),
@@ -441,7 +441,7 @@ class HomeScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: bgColor.withOpacity(0.2),
+              color: bgColor.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(

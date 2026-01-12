@@ -6,6 +6,7 @@ import 'package:activity/features/friends/domain/group_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 class StepTwoPeople extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -34,7 +35,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
 
   void _onSearchChanged() {
     setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
+      _searchQuery = _searchController.text.toLowerCase().trim();
     });
   }
 
@@ -49,6 +50,20 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
     }
   }
 
+  void _addExternalEmail(String email) {
+    // Check if valid email
+    if (!email.contains('@') || !email.contains('.')) return;
+
+    final newUser = UserModel(
+      id: const Uuid().v4(),
+      name: email.split('@').first,
+      email: email,
+      avatarUrl: 'https://ui-avatars.com/api/?name=$email&background=random',
+    );
+    ref.read(splitBillProvider.notifier).addParticipant(newUser);
+    _searchController.clear();
+  }
+
   void _addGroupMembers(GroupModel group) {
     final notifier = ref.read(splitBillProvider.notifier);
     for (var member in group.members) {
@@ -59,6 +74,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
         content: Text(
           'Added ${group.members.length} members from ${group.name}',
         ),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -75,9 +91,21 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
     final isValid = selectedParticipants.isNotEmpty;
 
     // Filter Logic
-    final filteredFriends = groupState.friends.where((user) {
-      return user.name.toLowerCase().contains(_searchQuery);
-    }).toList();
+    final allFriends = groupState.friends;
+    final filteredFriends = _searchQuery.isEmpty
+        ? allFriends
+        : allFriends.where((user) {
+            final nameMatch = user.name.toLowerCase().contains(_searchQuery);
+            final emailMatch =
+                user.email?.toLowerCase().contains(_searchQuery) ?? false;
+            return nameMatch || emailMatch;
+          }).toList();
+
+    // Check if search might be a new email
+    final bool showAddEmailOption =
+        _searchQuery.isNotEmpty &&
+        filteredFriends.isEmpty &&
+        _searchQuery.contains('@');
 
     return Column(
       children: [
@@ -95,7 +123,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Search for a name in your phonebook or add someone new via mobile number',
+                'Search for a name or email',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -107,13 +135,13 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                 decoration: BoxDecoration(
                   color: isDark
                       ? const Color(0xFF2C2C2E)
-                      : Colors.grey.withOpacity(0.1),
+                      : Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
                   controller: _searchController,
                   decoration: const InputDecoration(
-                    hintText: 'Name or Number',
+                    hintText: 'Name or Email',
                     border: InputBorder.none,
                     icon: Icon(Icons.search, color: Colors.grey),
                   ),
@@ -149,10 +177,13 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                             top: 0,
                             child: GestureDetector(
                               onTap: () => _toggleParticipant(user),
-                              child: const CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.white,
-                                child: Icon(
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
                                   Icons.close,
                                   size: 14,
                                   color: Colors.black,
@@ -174,40 +205,60 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
             ),
           ),
 
-        if (selectedParticipants.isNotEmpty) const Divider(),
+        if (selectedParticipants.isNotEmpty) const Divider(height: 32),
 
         // Vertical List
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             children: [
+              // Add External Email Option
+              if (showAddEmailOption)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const CircleAvatar(
+                    backgroundColor: AppColors.primaryPurple,
+                    child: Icon(Icons.add, color: Colors.white),
+                  ),
+                  title: Text('Add "$_searchQuery"'),
+                  subtitle: const Text('Add as a new participant'),
+                  onTap: () => _addExternalEmail(_searchQuery),
+                ),
+
               // Create Group Option
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF2C2C2E) : Colors.grey[200],
-                    shape: BoxShape.circle,
+              if (_searchQuery.isEmpty)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryPurple.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.group_add_rounded,
+                      color: AppColors.primaryPurple,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.group_add_outlined,
-                    color: AppColors.primaryPurple,
+                  title: const Text(
+                    'Create new group',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+                  onTap: () {
+                    context.push('/create-group');
+                  },
                 ),
-                title: const Text(
-                  'Create new group',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  context.push('/create-group');
-                },
-              ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: 24),
 
               // Groups Section
-              if (groupState.groups.isNotEmpty) ...[
+              if (_searchQuery.isEmpty && groupState.groups.isNotEmpty) ...[
                 Text(
                   'Your Groups',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -215,36 +266,62 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 ...groupState.groups.map((group) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.groups, color: Colors.orange),
-                    ),
-                    title: Text(
-                      group.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      '${group.members.length} members',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    trailing: OutlinedButton(
-                      onPressed: () => _addGroupMembers(group),
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.groups_rounded,
+                            color: Colors.orange,
+                          ),
                         ),
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                      child: const Text('Add'),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                group.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                '${group.members.length} members',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () => _addGroupMembers(group),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            side: BorderSide(
+                              color: isDark
+                                  ? Colors.white24
+                                  : Colors.grey.shade300,
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                          ),
+                          child: const Text('Add'),
+                        ),
+                      ],
                     ),
                   );
                 }),
@@ -253,54 +330,80 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
 
               // Friends Section
               Text(
-                'All Friends',
+                'All Users',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
-              if (filteredFriends.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Center(child: Text('No friends found')),
+              const SizedBox(height: 12),
+              if (filteredFriends.isEmpty && !showAddEmailOption)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 48,
+                          color: Colors.grey.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'No users found',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
               else
                 ...filteredFriends.map((user) {
                   final isSelected = selectedParticipants.any(
                     (p) => p.id == user.id,
                   );
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(user.avatarUrl),
-                    ),
-                    title: Text(
-                      user.name,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(user.avatarUrl),
                       ),
-                    ),
-                    subtitle: Text(
-                      user.email ?? '+91 98765 43210',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    trailing: isSelected
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: AppColors.primaryPurple,
-                          )
-                        : OutlinedButton(
-                            onPressed: () => _toggleParticipant(user),
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                      title: Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        user.email ?? 'No email',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppColors.primaryPurple,
+                              size: 28,
+                            )
+                          : OutlinedButton(
+                              onPressed: () => _toggleParticipant(user),
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                side: BorderSide(
+                                  color: isDark
+                                      ? Colors.white24
+                                      : Colors.grey.shade300,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
                               ),
-                              side: const BorderSide(color: Colors.grey),
+                              child: const Text('Add'),
                             ),
-                            child: const Text('Add'),
-                          ),
+                    ),
                   );
                 }),
             ],
@@ -326,7 +429,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                     : Colors.grey[300],
               ),
               child: const Text(
-                'Add',
+                'Continue',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),

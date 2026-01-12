@@ -1,5 +1,6 @@
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/auth/presentation/pages/login_screen.dart';
+import 'package:activity/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:activity/features/bills/presentation/pages/split_bill_flow.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/add_expense_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/analytics_screen.dart';
@@ -8,11 +9,11 @@ import 'package:activity/features/friends/presentation/pages/create_group_screen
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
 import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
 import 'package:activity/features/profile/presentation/pages/profile_screen.dart';
+import 'package:activity/features/splash/presentation/pages/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +38,14 @@ class ActivityApp extends StatelessWidget {
 }
 
 final _router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/sign-up',
+      builder: (context, state) => const SignUpScreen(),
+    ),
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     GoRoute(
       path: '/split-bill',

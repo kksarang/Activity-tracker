@@ -67,7 +67,7 @@ class DailyExpenseScreen extends ConsumerWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.peach.withOpacity(0.2),
+                color: AppColors.peach.withValues(alpha: 0.2),
                 boxShadow: const [
                   BoxShadow(blurRadius: 80, color: AppColors.peach),
                 ],
@@ -175,7 +175,7 @@ class DailyExpenseScreen extends ConsumerWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           offset: const Offset(0, -5),
                         ),
@@ -269,8 +269,8 @@ class DailyExpenseScreen extends ConsumerWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: (isOverBudget ? Colors.red : Colors.green).withOpacity(
-                    0.1,
+                  color: (isOverBudget ? Colors.red : Colors.green).withValues(
+                    alpha: 0.1,
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -334,12 +334,12 @@ class DailyExpenseScreen extends ConsumerWidget {
             Icon(
               Icons.receipt_long,
               size: 64,
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.grey.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
               'No expenses yet',
-              style: TextStyle(color: Colors.grey.withOpacity(0.5)),
+              style: TextStyle(color: Colors.grey.withValues(alpha: 0.5)),
             ),
           ],
         ),
@@ -417,8 +417,8 @@ class DailyExpenseScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.05)
-              : Colors.grey.withOpacity(0.1),
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.grey.withValues(alpha: 0.1),
         ),
       ),
       child: ListTile(
@@ -426,7 +426,7 @@ class DailyExpenseScreen extends ConsumerWidget {
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: expense.category.color.withOpacity(0.2),
+            color: expense.category.color.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(

@@ -101,7 +101,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 hintText: '0',
                 hintStyle: TextStyle(
                   color: isDark
-                      ? Colors.white.withOpacity(0.1)
+                      ? Colors.white.withValues(alpha: 0.1)
                       : Colors.black12,
                 ),
               ),
@@ -224,7 +224,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   elevation: 5,
-                  shadowColor: AppColors.primaryPurple.withOpacity(0.4),
+                  shadowColor: AppColors.primaryPurple.withValues(alpha: 0.4),
                 ),
                 child: const Text(
                   'Save Expense',
