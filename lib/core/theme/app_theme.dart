@@ -88,9 +88,9 @@ class AppTheme {
       ),
 
       // Component Themes
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardSurface,
-        elevation: 0, // Clean look, use border or soft shadow via Container
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: const BorderSide(color: AppColors.divider, width: 1),
@@ -161,12 +161,15 @@ class AppTheme {
             ),
           ),
 
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.darkCardSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: AppColors.divider.withOpacity(0.1), width: 1),
+          side: BorderSide(
+            color: AppColors.divider.withValues(alpha: 0.1),
+            width: 1,
+          ),
         ),
       ),
 
@@ -190,10 +193,10 @@ class AppTheme {
     );
   }
 
-  // Helper for Responsive Shadows (The "Premium" look)
+  // Helper for Responsive Shadows
   static List<BoxShadow> get softShadow => [
     BoxShadow(
-      color: Colors.black.withOpacity(0.05),
+      color: Colors.black.withValues(alpha: 0.05),
       blurRadius: 10,
       offset: const Offset(0, 4),
     ),

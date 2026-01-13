@@ -258,22 +258,23 @@ class HomeScreen extends ConsumerWidget {
     double expense,
     double income,
   ) {
+    final size = MediaQuery.of(context).size;
+
     return Container(
       width: double.infinity,
+      // Use constrained height to allow growth if content overflows
+      constraints: BoxConstraints(minHeight: size.height * 0.22),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF8B5CF6), // Primary Purple
-            Color(0xFF6D28D9), // Darker Violet
-          ],
+          colors: [AppColors.primary, AppColors.primaryDark],
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.4),
+            color: AppColors.primary.withValues(alpha: 0.4),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),
@@ -281,6 +282,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,7 +290,7 @@ class HomeScreen extends ConsumerWidget {
               Text(
                 'Total Balance',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 16,
                 ),
               ),
@@ -336,28 +338,30 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            '₹${balance.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
+          // Dynamic Balance Text
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              '₹${balance.toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildCardStat(
                 'Income',
                 '₹${income.toStringAsFixed(2)}',
-                Colors.greenAccent,
+                AppColors.accentGreen,
               ),
               _buildCardStat(
                 'Expense',
                 '₹${expense.toStringAsFixed(2)}',
-                Colors.redAccent,
+                AppColors.accentRed,
               ),
             ],
           ),
@@ -388,14 +392,14 @@ class HomeScreen extends ConsumerWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.black.withValues(alpha: 0.5),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 12,
               ),
             ),
             Text(
               value,
               style: const TextStyle(
-                color: Colors.black87,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -509,20 +513,27 @@ class HomeScreen extends ConsumerWidget {
 
   void _showToolsSheet(BuildContext context, bool isDark, WidgetRef ref) {
     _showActionSheet(context, isDark, 'Insights & Settings', [
-      _ActionItem(Icons.analytics_outlined, 'Expense Analytics', () {
-        Navigator.pop(context);
-        context.push('/analytics');
+      _ActionItem(Icons.analytics_outlined, 'Expense Analytics', () async {
+        Navigator.pop(context); // Close sheet
+        await Future.delayed(
+          const Duration(milliseconds: 150),
+        ); // Wait for animation
+        if (context.mounted) {
+          context.push('/analytics');
+        }
       }),
       _ActionItem(Icons.description_outlined, 'Monthly Reports', () {
-        // Renamed from Reports
         _showComingSoon(context);
       }),
       _ActionItem(Icons.category_outlined, 'Categories', () {
         _showComingSoon(context);
       }),
-      _ActionItem(Icons.account_balance, 'Set Opening Balance', () {
+      _ActionItem(Icons.account_balance, 'Set Opening Balance', () async {
         Navigator.pop(context);
-        _showOpeningBalanceDialog(context, ref);
+        await Future.delayed(const Duration(milliseconds: 150));
+        if (context.mounted) {
+          _showOpeningBalanceDialog(context, ref);
+        }
       }),
       _ActionItem(Icons.savings_outlined, 'Budget Settings', () {
         _showComingSoon(context);
