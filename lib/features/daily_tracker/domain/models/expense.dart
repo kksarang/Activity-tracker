@@ -8,6 +8,9 @@ enum ExpenseCategory {
   bills(Icons.receipt, Color(0xFFE0C3FC), 'Bills'),
   entertainment(Icons.movie, Color(0xFFFFDAC1), 'Fun'),
   health(Icons.medical_services, Color(0xFF8EC5FC), 'Health'),
+  salary(Icons.attach_money, Color(0xFFC1E1C1), 'Salary'),
+  freelance(Icons.laptop_mac, Color(0xFFFFE5B4), 'Freelance'),
+  gift(Icons.card_giftcard, Color(0xFFFFD1DC), 'Gift'),
   other(Icons.category, Color(0xFFE0E0E0), 'Other');
 
   final IconData icon;

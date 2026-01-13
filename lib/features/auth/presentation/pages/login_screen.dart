@@ -28,9 +28,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.read(authControllerProvider.notifier).signInWithGoogle();
   }
 
-  void _signInAnonymously() {
+  Future<void> _signInAnonymously() async {
     Navigator.pop(context); // Close confirmation sheet
-    ref.read(authControllerProvider.notifier).signInAnonymously();
+    await ref.read(authControllerProvider.notifier).signInAnonymously();
+    if (mounted) {
+      context.go('/home');
+    }
   }
 
   void _signInWithEmail() {
