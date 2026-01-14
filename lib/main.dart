@@ -9,6 +9,10 @@ import 'package:activity/features/friends/presentation/pages/create_group_screen
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
 import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
 import 'package:activity/features/profile/presentation/pages/profile_screen.dart';
+import 'package:activity/features/daily_tracker/presentation/pages/budget_settings_screen.dart';
+import 'package:activity/features/daily_tracker/presentation/pages/categories_screen.dart';
+import 'package:activity/features/daily_tracker/presentation/pages/monthly_report_screen.dart';
+import 'package:activity/features/settings/presentation/pages/app_settings_screen.dart';
 import 'package:activity/features/splash/presentation/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +89,22 @@ final _router = GoRouter(
     GoRoute(
       path: '/analytics',
       builder: (context, state) => const AnalyticsScreen(),
+    ),
+    GoRoute(
+      path: '/monthly-report',
+      builder: (context, state) => const MonthlyReportScreen(),
+    ),
+    GoRoute(
+      path: '/categories',
+      builder: (context, state) => const CategoriesScreen(),
+    ),
+    GoRoute(
+      path: '/budget-settings',
+      builder: (context, state) => const BudgetSettingsScreen(),
+    ),
+    GoRoute(
+      path: '/app-settings',
+      builder: (context, state) => const AppSettingsScreen(),
     ),
     GoRoute(
       path: '/smart-action',
