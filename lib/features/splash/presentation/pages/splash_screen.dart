@@ -3,7 +3,7 @@ import 'package:activity/features/auth/presentation/providers/auth_provider.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -55,20 +55,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Lottie Animation
+            // Logo
             SizedBox(
-              width: 200,
-              height: 200,
-              child: Lottie.network(
-                'https://assets2.lottiefiles.com/packages/lf20_a2chheio.json', // Generic Loading
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.incomplete_circle_rounded,
-                    size: 80,
-                    color: AppColors.primaryPurple,
-                  );
-                },
-              ),
+              width: 180,
+              height: 180,
+              child: Image.asset('assets/images/logo.png'),
             ),
             const SizedBox(height: 24),
             Text(

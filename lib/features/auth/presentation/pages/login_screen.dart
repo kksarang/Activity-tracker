@@ -117,22 +117,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons
-                              .incomplete_circle_rounded, // Abstract/Modern icon
-                          size: 64,
-                          color: AppColors.primaryPurple,
-                        ),
+                      SizedBox(
+                        width: 140,
+                        height: 140,
+                        child: Image.asset('assets/images/logo.png'),
                       ),
                       const SizedBox(height: 32),
                       Text(

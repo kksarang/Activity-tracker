@@ -522,11 +522,15 @@ class HomeScreen extends ConsumerWidget {
           context.push('/analytics');
         }
       }),
-      _ActionItem(Icons.description_outlined, 'Monthly Reports', () {
-        _showComingSoon(context);
+      _ActionItem(Icons.description_outlined, 'Monthly Reports', () async {
+        Navigator.pop(context);
+        await Future.delayed(const Duration(milliseconds: 150));
+        if (context.mounted) context.push('/monthly-report');
       }),
-      _ActionItem(Icons.category_outlined, 'Categories', () {
-        _showComingSoon(context);
+      _ActionItem(Icons.category_outlined, 'Categories', () async {
+        Navigator.pop(context);
+        await Future.delayed(const Duration(milliseconds: 150));
+        if (context.mounted) context.push('/categories');
       }),
       _ActionItem(Icons.account_balance, 'Set Opening Balance', () async {
         Navigator.pop(context);
@@ -535,11 +539,15 @@ class HomeScreen extends ConsumerWidget {
           _showOpeningBalanceDialog(context, ref);
         }
       }),
-      _ActionItem(Icons.savings_outlined, 'Budget Settings', () {
-        _showComingSoon(context);
+      _ActionItem(Icons.savings_outlined, 'Budget Settings', () async {
+        Navigator.pop(context);
+        await Future.delayed(const Duration(milliseconds: 150));
+        if (context.mounted) context.push('/budget-settings');
       }),
-      _ActionItem(Icons.settings_outlined, 'App Settings', () {
-        _showComingSoon(context);
+      _ActionItem(Icons.settings_outlined, 'App Settings', () async {
+        Navigator.pop(context);
+        await Future.delayed(const Duration(milliseconds: 150));
+        if (context.mounted) context.push('/app-settings');
       }),
     ]);
   }
@@ -575,22 +583,6 @@ class HomeScreen extends ConsumerWidget {
             child: const Text('Save'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showComingSoon(BuildContext context) {
-    Navigator.pop(context); // Close sheet first
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(
-          'This feature is coming soon 🚀',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: AppColors.primaryPurple,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 1),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
