@@ -181,16 +181,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 // Official G Logo
-                                Image.network(
-                                  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/240px-Google_%22G%22_logo.svg.png',
-                                  height: 24,
+                                Container(
                                   width: 24,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                        Icons.g_mobiledata,
-                                        size: 30,
-                                        color: Colors.blue,
-                                      ),
+                                  height: 24,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'G',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF4285F4), // Google Blue
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(width: 12),
                                 const Text(
