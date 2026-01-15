@@ -1,4 +1,5 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/theme/theme_provider.dart';
 import 'package:activity/features/auth/presentation/pages/login_screen.dart';
 import 'package:activity/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:activity/features/bills/presentation/pages/split_bill_flow.dart';
@@ -27,16 +28,18 @@ void main() async {
   runApp(const ProviderScope(child: ActivityApp()));
 }
 
-class ActivityApp extends StatelessWidget {
+class ActivityApp extends ConsumerWidget {
   const ActivityApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
+
     return MaterialApp.router(
       title: 'Activity Tracker',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );

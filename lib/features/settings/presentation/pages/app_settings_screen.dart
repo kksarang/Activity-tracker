@@ -1,21 +1,29 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AppSettingsScreen extends StatefulWidget {
+class AppSettingsScreen extends ConsumerStatefulWidget {
   const AppSettingsScreen({super.key});
 
   @override
-  State<AppSettingsScreen> createState() => _AppSettingsScreenState();
+  ConsumerState<AppSettingsScreen> createState() => _AppSettingsScreenState();
 }
 
-class _AppSettingsScreenState extends State<AppSettingsScreen> {
-  bool _darkMode = true;
+class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
   bool _notifications = true;
   bool _biometrics = false;
 
   @override
   Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Determine the switch state based on the actual theme mode or system brightness if system
+    final bool isDarkModeSwitchOn =
+        themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return Scaffold(
       backgroundColor: isDark
@@ -34,8 +42,10 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
           _buildSwitchTile(
             'Dark Mode',
             'Use dark theme across the app',
-            _darkMode,
-            (val) => setState(() => _darkMode = val),
+            isDarkModeSwitchOn,
+            (val) {
+              ref.read(themeProvider.notifier).toggleTheme(val);
+            },
             icon: Icons.dark_mode_outlined,
           ),
           _buildSwitchTile(
@@ -110,8 +120,6 @@ class _AppSettingsScreenState extends State<AppSettingsScreen> {
     ValueChanged<bool> onChanged, {
     required IconData icon,
   }) {
-    // Determine current theme for coloring
-    // Ideally we pass context or use Theme.of(context)
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(

@@ -71,12 +71,31 @@ class ProfileScreen extends ConsumerWidget {
                               offset: const Offset(0, 10),
                             ),
                           ],
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              user?.photoUrl ??
-                                  'https://i.pravatar.cc/300?u=a042581f4e29026024d',
-                            ),
+                          color: Colors.grey.withValues(
+                            alpha: 0.1,
+                          ), // Placeholder background
+                        ),
+                        child: ClipOval(
+                          child: Image.network(
+                            user?.photoUrl ??
+                                'https://i.pravatar.cc/300?u=a042581f4e29026024d',
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey.withValues(alpha: 0.2),
+                                child: const Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            },
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -144,19 +163,13 @@ class ProfileScreen extends ConsumerWidget {
                   Icons.person_outline,
                   'Personal Information',
                 ),
-                _buildSettingsTile(
-                  context,
-                  isDark,
-                  Icons.credit_card,
-                  'Payment Methods',
-                ),
+
                 _buildSettingsTile(
                   context,
                   isDark,
                   Icons.notifications_none,
                   'Notifications',
                 ),
-                _buildSettingsTile(context, isDark, Icons.security, 'Security'),
 
                 const SizedBox(height: 40),
 
