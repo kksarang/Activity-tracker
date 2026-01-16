@@ -162,6 +162,7 @@ class ProfileScreen extends ConsumerWidget {
                   isDark,
                   Icons.person_outline,
                   'Personal Information',
+                  onTap: () => context.push('/personal-info'),
                 ),
 
                 _buildSettingsTile(
