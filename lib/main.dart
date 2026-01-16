@@ -10,6 +10,7 @@ import 'package:activity/features/friends/presentation/pages/create_group_screen
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
 import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
 import 'package:activity/features/profile/presentation/pages/profile_screen.dart';
+import 'package:activity/features/profile/presentation/pages/personal_info_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/budget_settings_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/categories_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/monthly_report_screen.dart';
@@ -63,6 +64,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/personal-info',
+      builder: (context, state) => const PersonalInformationScreen(),
     ),
     GoRoute(
       path: '/create-group',
