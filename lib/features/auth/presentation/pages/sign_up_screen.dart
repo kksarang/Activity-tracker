@@ -121,145 +121,153 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
           SafeArea(
             child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      // Header
-                      Icon(
-                        Icons.person_add_alt_1_rounded,
-                        size: 50,
-                        color: AppColors.primaryPurple,
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Create Account',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF2D3142),
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Start your journey with us.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: isDark ? Colors.white60 : Colors.grey[600],
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Header
+                        Icon(
+                          Icons.person_add_alt_1_rounded,
+                          size: 50,
+                          color: AppColors.primaryPurple,
                         ),
-                      ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Create Account',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2D3142),
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Start your journey with us.',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: isDark
+                                    ? Colors.white60
+                                    : Colors.grey[600],
+                              ),
+                        ),
 
-                      const SizedBox(height: 48),
+                        const SizedBox(height: 48),
 
-                      // Name
-                      _buildTextField(
-                        controller: _nameController,
-                        label: 'Full Name',
-                        icon: Icons.person_outline_rounded,
-                        isDark: isDark,
-                        validator: (v) =>
-                            (v == null || v.isEmpty) ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Email
-                      _buildTextField(
-                        controller: _emailController,
-                        label: 'Email Address',
-                        icon: Icons.email_outlined,
-                        isDark: isDark,
-                        validator: (v) => (v == null || !v.contains('@'))
-                            ? 'Invalid email'
-                            : null,
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password
-                      StatefulBuilder(
-                        builder: (context, setState) => _buildTextField(
-                          controller: _passwordController,
-                          label: 'Password',
-                          icon: Icons.lock_outline_rounded,
+                        // Name
+                        _buildTextField(
+                          controller: _nameController,
+                          label: 'Full Name',
+                          icon: Icons.person_outline_rounded,
                           isDark: isDark,
-                          isPassword: true,
-                          isPasswordVisible: _isPasswordVisible,
-                          onVisibilityToggle: () {
-                            setState(
-                              () => _isPasswordVisible = !_isPasswordVisible,
-                            );
-                          },
-                          validator: (v) => (v == null || v.length < 6)
-                              ? 'Min 6 chars'
+                          validator: (v) =>
+                              (v == null || v.isEmpty) ? 'Required' : null,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Email
+                        _buildTextField(
+                          controller: _emailController,
+                          label: 'Email Address',
+                          icon: Icons.email_outlined,
+                          isDark: isDark,
+                          validator: (v) => (v == null || !v.contains('@'))
+                              ? 'Invalid email'
                               : null,
                         ),
-                      ),
+                        const SizedBox(height: 16),
 
-                      const SizedBox(height: 32),
-
-                      // Sign Up Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: FilledButton(
-                          onPressed: isLoading ? null : _signUp,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppColors.primaryPurple,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 4,
-                            shadowColor: AppColors.primaryPurple.withValues(
-                              alpha: 0.4,
-                            ),
+                        // Password
+                        StatefulBuilder(
+                          builder: (context, setState) => _buildTextField(
+                            controller: _passwordController,
+                            label: 'Password',
+                            icon: Icons.lock_outline_rounded,
+                            isDark: isDark,
+                            isPassword: true,
+                            isPasswordVisible: _isPasswordVisible,
+                            onVisibilityToggle: () {
+                              setState(
+                                () => _isPasswordVisible = !_isPasswordVisible,
+                              );
+                            },
+                            validator: (v) => (v == null || v.length < 6)
+                                ? 'Min 6 chars'
+                                : null,
                           ),
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'Create Account',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                         ),
-                      ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 32),
 
-                      // Footer
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Already have an account? ',
-                            style: TextStyle(
-                              color: isDark ? Colors.white60 : Colors.grey[600],
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => context.pop(),
-                            child: Text(
-                              'Sign In',
-                              style: TextStyle(
-                                color: AppColors.primaryPurple,
-                                fontWeight: FontWeight.bold,
+                        // Sign Up Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: FilledButton(
+                            onPressed: isLoading ? null : _signUp,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primaryPurple,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                              shadowColor: AppColors.primaryPurple.withValues(
+                                alpha: 0.4,
                               ),
                             ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Footer
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account? ',
+                              style: TextStyle(
+                                color: isDark
+                                    ? Colors.white60
+                                    : Colors.grey[600],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => context.pop(),
+                              child: Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  color: AppColors.primaryPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),

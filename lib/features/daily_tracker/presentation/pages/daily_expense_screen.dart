@@ -76,121 +76,134 @@ class DailyExpenseScreen extends ConsumerWidget {
           ),
 
           SafeArea(
-            child: Column(
-              children: [
-                // Date Selector Strip
-                SizedBox(
-                  height: 80,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: 30, // Mock 30 days around selected
-                    itemBuilder: (context, index) {
-                      // Just centering current date for demo roughly
-                      final date = selectedDate
-                          .subtract(const Duration(days: 3))
-                          .add(Duration(days: index));
-                      final isSelected =
-                          date.day == selectedDate.day &&
-                          date.month == selectedDate.month &&
-                          date.year == selectedDate.year;
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    // Date Selector Strip
+                    SizedBox(
+                      height: 80,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: 30, // Mock 30 days around selected
+                        itemBuilder: (context, index) {
+                          // Just centering current date for demo roughly
+                          final date = selectedDate
+                              .subtract(const Duration(days: 3))
+                              .add(Duration(days: index));
+                          final isSelected =
+                              date.day == selectedDate.day &&
+                              date.month == selectedDate.month &&
+                              date.year == selectedDate.year;
 
-                      return GestureDetector(
-                        onTap: () {
-                          ref.read(selectedDateProvider.notifier).state = date;
-                        },
-                        child: Container(
-                          width: 60,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppColors.primaryPurple
-                                : (isDark
-                                      ? AppColors.darkGlassOverlay
-                                      : Colors.white),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Colors.transparent
-                                  : (isDark
-                                        ? AppColors.darkBorder
-                                        : Colors.black12),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                DateFormat('E').format(date).toUpperCase(),
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: isSelected
-                                      ? Colors.white70
-                                      : Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                          return GestureDetector(
+                            onTap: () {
+                              ref.read(selectedDateProvider.notifier).state =
+                                  date;
+                            },
+                            child: Container(
+                              width: 60,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 8,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${date.day}',
-                                style: TextStyle(
-                                  fontSize: 18,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.primaryPurple
+                                    : (isDark
+                                          ? AppColors.darkGlassOverlay
+                                          : Colors.white),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
                                   color: isSelected
-                                      ? Colors.white
+                                      ? Colors.transparent
                                       : (isDark
-                                            ? Colors.white
-                                            : Colors.black87),
-                                  fontWeight: FontWeight.bold,
+                                            ? AppColors.darkBorder
+                                            : Colors.black12),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Daily Summary Card
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: _buildSummaryCard(context, dailyBudget, isDark),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Expense List
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkGlassOverlay : Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(32),
-                        topRight: Radius.circular(32),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    DateFormat('E').format(date).toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isSelected
+                                          ? Colors.white70
+                                          : Colors.grey,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${date.day}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : (isDark
+                                                ? Colors.white
+                                                : Colors.black87),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, -5),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Daily Summary Card
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _buildSummaryCard(context, dailyBudget, isDark),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Expense List
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkGlassOverlay
+                              : Colors.white,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(32),
+                            topRight: Radius.circular(32),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, -5),
+                            ),
+                          ],
                         ),
-                      ],
+                        child: expensesAsync.when(
+                          data: (expenses) => _buildExpenseList(
+                            context,
+                            expenses,
+                            selectedDate,
+                          ),
+                          loading: () =>
+                              const Center(child: CircularProgressIndicator()),
+                          error: (err, stack) =>
+                              Center(child: Text('Error: $err')),
+                        ),
+                      ),
                     ),
-                    child: expensesAsync.when(
-                      data: (expenses) =>
-                          _buildExpenseList(context, expenses, selectedDate),
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (err, stack) => Center(child: Text('Error: $err')),
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],

@@ -104,119 +104,130 @@ class HomeScreen extends ConsumerWidget {
           ),
 
           SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                const SizedBox(height: 10),
-                // Pass income as well
-                _buildBalanceCard(
-                  context,
-                  currentBalance,
-                  totalExpense,
-                  totalIncome,
-                ),
-                const SizedBox(height: 32),
-                _buildActionButtons(context, isDark, ref),
-                const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: ListView(
+                  padding: const EdgeInsets.all(24),
                   children: [
-                    Text(
-                      'Brief Activity',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SizedBox(height: 10),
+                    // Pass income as well
+                    _buildBalanceCard(
+                      context,
+                      currentBalance,
+                      totalExpense,
+                      totalIncome,
                     ),
-                    TextButton(onPressed: () {}, child: const Text('See All')),
+                    const SizedBox(height: 32),
+                    _buildActionButtons(context, isDark, ref),
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Brief Activity',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('See All'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (activities.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 40.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withValues(alpha: 0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.history_edu,
+                                  size: 48,
+                                  color: Colors.grey.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No activity yet',
+                                style: TextStyle(
+                                  color: Colors.grey.withValues(alpha: 0.8),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Add your first expense or income\nto start tracking.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              OutlinedButton.icon(
+                                onPressed: () => context.push('/add-expense'),
+                                icon: const Icon(Icons.add),
+                                label: const Text('Add Transaction'),
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      ...activityState.recentActivities.map((activity) {
+                        final isCredit =
+                            activity.direction == ActivityDirection.credit;
+                        final sign = isCredit ? '+' : '-';
+                        final color = isCredit
+                            ? AppColors.mint
+                            : (isDark ? Colors.white : Colors.black87);
+
+                        IconData icon;
+                        switch (activity.type) {
+                          case ActivityType.income:
+                            icon = Icons.arrow_downward_rounded;
+                            break;
+                          case ActivityType.expense:
+                            icon = Icons.receipt_long_rounded;
+                            break;
+                          case ActivityType.split:
+                            icon = Icons.call_split_rounded;
+                            break;
+                          case ActivityType.settlement:
+                            icon = Icons.handshake_rounded;
+                            break;
+                          default:
+                            icon = Icons.local_activity_rounded;
+                        }
+
+                        return _buildTransactionItem(
+                          context,
+                          isDark,
+                          activity.title,
+                          'Today', // TODO: Add proper date formatter
+                          '$sign₹${activity.amount.toStringAsFixed(2)}',
+                          icon,
+                          color,
+                        );
+                      }),
                   ],
                 ),
-                const SizedBox(height: 16),
-                if (activities.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40.0),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.history_edu,
-                              size: 48,
-                              color: Colors.grey.withValues(alpha: 0.5),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No activity yet',
-                            style: TextStyle(
-                              color: Colors.grey.withValues(alpha: 0.8),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Add your first expense or income\nto start tracking.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          const SizedBox(height: 24),
-                          OutlinedButton.icon(
-                            onPressed: () => context.push('/add-expense'),
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add Transaction'),
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  ...activityState.recentActivities.map((activity) {
-                    final isCredit =
-                        activity.direction == ActivityDirection.credit;
-                    final sign = isCredit ? '+' : '-';
-                    final color = isCredit
-                        ? AppColors.mint
-                        : (isDark ? Colors.white : Colors.black87);
-
-                    IconData icon;
-                    switch (activity.type) {
-                      case ActivityType.income:
-                        icon = Icons.arrow_downward_rounded;
-                        break;
-                      case ActivityType.expense:
-                        icon = Icons.receipt_long_rounded;
-                        break;
-                      case ActivityType.split:
-                        icon = Icons.call_split_rounded;
-                        break;
-                      case ActivityType.settlement:
-                        icon = Icons.handshake_rounded;
-                        break;
-                      default:
-                        icon = Icons.local_activity_rounded;
-                    }
-
-                    return _buildTransactionItem(
-                      context,
-                      isDark,
-                      activity.title,
-                      'Today', // TODO: Add proper date formatter
-                      '$sign₹${activity.amount.toStringAsFixed(2)}',
-                      icon,
-                      color,
-                    );
-                  }),
-              ],
+              ),
             ),
           ),
         ],
