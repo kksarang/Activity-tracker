@@ -77,226 +77,249 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF1E1E2C), const Color(0xFF121212)]
-                    : [
-                        const Color(0xFFE3F2FD), // Very light blue
-                        const Color(0xFFFAFAFA), // White-ish
-                      ],
-                stops: const [0.6, 1.0],
-              ),
-            ),
-          ),
-
-          // Abstract Shapes
-          Positioned(
-            top: -50,
-            right: -50,
-            child: _buildBlurBlob(AppColors.primaryPurple, 300),
-          ),
-          Positioned(
-            top: 200,
-            left: -100,
-            child: _buildBlurBlob(AppColors.mint, 250),
-          ),
-
-          SafeArea(
-            child: Column(
-              children: [
-                // 1. Hero Section (Flexible space)
-                Expanded(
-                  flex: 6,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 140,
-                        height: 140,
-                        child: Image.asset('assets/images/logo.png'),
-                      ),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Activity Tracker',
-                        style: Theme.of(context).textTheme.displaySmall
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF2D3142),
-                              letterSpacing: -0.5,
-                            ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Track less. Achieve more.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: isDark ? Colors.white60 : Colors.grey[600],
-                          fontSize: 18,
-                          letterSpacing: 0.5,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Stack(
+                  children: [
+                    // Background
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: isDark
+                                ? [
+                                    const Color(0xFF1E1E2C),
+                                    const Color(0xFF121212),
+                                  ]
+                                : [
+                                    const Color(0xFFE3F2FD), // Very light blue
+                                    const Color(0xFFFAFAFA), // White-ish
+                                  ],
+                            stops: const [0.6, 1.0],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                // 2. Action Section
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Primary: Google
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52, // Standard height
-                          child: OutlinedButton(
-                            onPressed: _signInWithGoogle,
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black54,
-                              elevation: 0,
-                              side: const BorderSide(
-                                color: Color(0xFFDADCE0),
-                              ), // Official border color
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  26,
-                                ), // Pill shape
+                    // Abstract Shapes
+                    Positioned(
+                      top: -50,
+                      right: -50,
+                      child: _buildBlurBlob(AppColors.primaryPurple, 300),
+                    ),
+                    Positioned(
+                      top: 200,
+                      left: -100,
+                      child: _buildBlurBlob(AppColors.mint, 250),
+                    ),
+
+                    // Content
+                    Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: SafeArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Spacer(flex: 2),
+                              // 1. Hero Section
+                              SizedBox(
+                                width: 140,
+                                height: 140,
+                                child: Image.asset('assets/images/logo.png'),
                               ),
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Official G Logo
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    'G',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: Color(0xFF4285F4), // Google Blue
-                                      fontFamily: 'Roboto',
+                              const SizedBox(height: 32),
+                              Text(
+                                'Activity Tracker',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.displaySmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? Colors.white
+                                          : const Color(0xFF2D3142),
+                                      letterSpacing: -0.5,
+                                    ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Track less. Achieve more.',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(
+                                      color: isDark
+                                          ? Colors.white60
+                                          : Colors.grey[600],
+                                      fontSize: 18,
+                                      letterSpacing: 0.5,
+                                    ),
+                              ),
+
+                              const Spacer(flex: 3),
+
+                              // 2. Action Section
+                              Column(
+                                children: [
+                                  // Primary: Google
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 52,
+                                    child: OutlinedButton(
+                                      onPressed: _signInWithGoogle,
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Colors.black54,
+                                        elevation: 0,
+                                        side: const BorderSide(
+                                          color: Color(0xFFDADCE0),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            26,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width: 24,
+                                            height: 24,
+                                            alignment: Alignment.center,
+                                            child: const Text(
+                                              'G',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w900,
+                                                color: Color(0xFF4285F4),
+                                                fontFamily: 'Roboto',
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          const Text(
+                                            'Continue with Google',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xFF3C4043),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                const Text(
-                                  'Continue with Google',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(
-                                      0xFF3C4043,
-                                    ), // Official text color
+
+                                  const SizedBox(height: 16),
+
+                                  // Secondary: Guest
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: OutlinedButton(
+                                      onPressed: () =>
+                                          _showGuestConfirmationSheet(
+                                            context,
+                                            isDark,
+                                          ),
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          color: isDark
+                                              ? Colors.white24
+                                              : Colors.grey.withOpacity(0.3),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            28,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Continue as Guest',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Offline only · No cloud backup',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isDark
+                                          ? Colors.white38
+                                          : Colors.grey[500],
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 32),
+
+                                  // Email Link
+                                  TextButton(
+                                    onPressed: () =>
+                                        _showEmailLoginSheet(context, isDark),
+                                    child: Text(
+                                      'Sign in with Email',
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? Colors.white70
+                                            : Colors.grey[700],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "New here? ",
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? Colors.white38
+                                              : Colors.grey[500],
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => context.push('/sign-up'),
+                                        child: Text(
+                                          "Create an account",
+                                          style: TextStyle(
+                                            color: AppColors.primaryPurple,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 32),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-
-                        const SizedBox(height: 16),
-
-                        // Secondary: Guest
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: OutlinedButton(
-                            onPressed: () =>
-                                _showGuestConfirmationSheet(context, isDark),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                color: isDark
-                                    ? Colors.white24
-                                    : Colors.grey.withValues(alpha: 0.3),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                            ),
-                            child: const Text(
-                              'Continue as Guest',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Offline only · No cloud backup',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark ? Colors.white38 : Colors.grey[500],
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        // Email Link
-                        TextButton(
-                          onPressed: () =>
-                              _showEmailLoginSheet(context, isDark),
-                          child: Text(
-                            'Sign in with Email',
-                            style: TextStyle(
-                              color: isDark ? Colors.white70 : Colors.grey[700],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "New here? ",
-                              style: TextStyle(
-                                color: isDark
-                                    ? Colors.white38
-                                    : Colors.grey[500],
-                                fontSize: 13,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () => context.push('/sign-up'),
-                              child: Text(
-                                "Create an account",
-                                style: TextStyle(
-                                  color: AppColors.primaryPurple,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
