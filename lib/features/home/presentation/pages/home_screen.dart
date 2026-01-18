@@ -35,35 +35,38 @@ class HomeScreen extends ConsumerWidget {
         centerTitle: true, // ... rest of AppBar
 
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkGlassOverlay
-                  : Colors.white.withValues(alpha: 0.5),
-              shape: BoxShape.circle,
-            ),
-            child: Stack(
-              children: [
-                const Icon(Icons.notifications_none_rounded, size: 24),
-                if (activityState.unreadNotificationCount > 0)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.redAccent,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 8,
-                        minHeight: 8,
+          GestureDetector(
+            onTap: () => context.push('/notifications'),
+            child: Container(
+              margin: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.darkGlassOverlay
+                    : Colors.white.withValues(alpha: 0.5),
+                shape: BoxShape.circle,
+              ),
+              child: Stack(
+                children: [
+                  const Icon(Icons.notifications_none_rounded, size: 24),
+                  if (activityState.unreadNotificationCount > 0)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.redAccent,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 8,
+                          minHeight: 8,
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -271,112 +274,115 @@ class HomeScreen extends ConsumerWidget {
   ) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      width: double.infinity,
-      // Use constrained height to allow growth if content overflows
-      constraints: BoxConstraints(minHeight: size.height * 0.22),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.primaryDark],
+    return GestureDetector(
+      onTap: () => context.push('/daily-tracker'),
+      child: Container(
+        width: double.infinity,
+        // Use constrained height to allow growth if content overflows
+        constraints: BoxConstraints(minHeight: size.height * 0.22),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primary, AppColors.primaryDark],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.4),
+              blurRadius: 24,
+              offset: const Offset(0, 12),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.4),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total Balance',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.7),
-                  fontSize: 16,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total Balance',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Currency switching coming soon!'),
-                      behavior: SnackBarBehavior.floating,
+                GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Currency switching coming soon!'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
                     ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'INR',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                    child: Row(
+                      children: [
+                        const Text(
+                          'INR',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: Colors.white.withValues(alpha: 0.6),
-                        size: 16,
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Colors.white.withValues(alpha: 0.6),
+                          size: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          // Dynamic Balance Text
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              '₹${balance.toStringAsFixed(2)}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
+              ],
+            ),
+            // Dynamic Balance Text
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '₹${balance.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildCardStat(
-                'Income',
-                '₹${income.toStringAsFixed(2)}',
-                AppColors.accentGreen,
-              ),
-              _buildCardStat(
-                'Expense',
-                '₹${expense.toStringAsFixed(2)}',
-                AppColors.accentRed,
-              ),
-            ],
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildCardStat(
+                  'Income',
+                  '₹${income.toStringAsFixed(2)}',
+                  AppColors.accentGreen,
+                ),
+                _buildCardStat(
+                  'Expense',
+                  '₹${expense.toStringAsFixed(2)}',
+                  AppColors.accentRed,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

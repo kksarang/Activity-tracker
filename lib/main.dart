@@ -8,6 +8,7 @@ import 'package:activity/features/daily_tracker/presentation/pages/analytics_scr
 import 'package:activity/features/daily_tracker/presentation/pages/daily_expense_screen.dart';
 import 'package:activity/features/friends/presentation/pages/create_group_screen.dart';
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
+import 'package:activity/features/home/presentation/pages/notifications_screen.dart';
 import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
 import 'package:activity/features/profile/presentation/pages/profile_screen.dart';
 import 'package:activity/features/profile/presentation/pages/personal_info_screen.dart';
@@ -134,6 +135,10 @@ final _router = GoRouter(
           return FadeTransition(opacity: animation, child: child);
         },
       ),
+    ),
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationsScreen(),
     ),
   ],
 );
