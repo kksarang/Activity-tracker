@@ -309,6 +309,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                         OutlinedButton(
                           onPressed: () => _addGroupMembers(group),
                           style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(0, 40),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -389,6 +390,7 @@ class _StepTwoPeopleState extends ConsumerState<StepTwoPeople> {
                           : OutlinedButton(
                               onPressed: () => _toggleParticipant(user),
                               style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(0, 40),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),

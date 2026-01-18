@@ -72,105 +72,126 @@ class _StepOneAmountState extends ConsumerState<StepOneAmount> {
     final amount = double.tryParse(_amountStr) ?? 0;
     final isValid = amount > 0 && _titleController.text.isNotEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'What are you\nsplitting?',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Add a name of the split so that it\'s easy to remember later',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-          ),
-          const SizedBox(height: 24),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'What are you\nsplitting?',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Add a name of the split so that it\'s easy to remember later',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 24),
 
-          // Title Input
-          TextField(
-            controller: _titleController,
-            onChanged: _onTitleChanged,
-            decoration: InputDecoration(
-              hintText: 'Dinner at Marina Walk',
-              hintStyle: TextStyle(color: Colors.grey.withValues(alpha: 0.5)),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
-              ),
-              focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColors.primaryPurple),
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 18,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
-          const SizedBox(height: 32),
+                    // Title Input
+                    TextField(
+                      controller: _titleController,
+                      onChanged: _onTitleChanged,
+                      decoration: InputDecoration(
+                        hintText: 'Dinner at Marina Walk',
+                        hintStyle: TextStyle(
+                          color: Colors.grey.withValues(alpha: 0.5),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppColors.primaryPurple,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
 
-          // Amount Display
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '₹',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white70 : Colors.black54,
-                  height: 1.5,
+                    // Amount Display
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '₹',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white70 : Colors.black54,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _amountStr.isEmpty ? '0' : _amountStr,
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    // Continue Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: FilledButton(
+                        onPressed: isValid ? widget.onNext : null,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.primaryPurple,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          disabledBackgroundColor: isDark
+                              ? Colors.grey[800]
+                              : Colors.grey[300],
+                        ),
+                        child: const Text(
+                          'Continue',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Custom Keypad
+                    _buildKeypad(context, isDark),
+                  ],
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  _amountStr.isEmpty ? '0' : _amountStr,
-                  style: TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const Spacer(),
-
-          // Continue Button
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: FilledButton(
-              onPressed: isValid ? widget.onNext : null,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primaryPurple,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                disabledBackgroundColor: isDark
-                    ? Colors.grey[800]
-                    : Colors.grey[300],
-              ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
             ),
           ),
-          const SizedBox(height: 24),
-
-          // Custom Keypad
-          _buildKeypad(context, isDark),
-        ],
-      ),
+        );
+      },
     );
   }
 
