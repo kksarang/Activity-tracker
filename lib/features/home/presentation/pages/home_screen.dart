@@ -123,6 +123,13 @@ class HomeScreen extends ConsumerWidget {
                       totalIncome,
                     ),
                     const SizedBox(height: 32),
+                    _buildQuickAction(
+                      context,
+                      Icons.people_alt_rounded,
+                      'Friends',
+                      () => context.push('/friends'),
+                    ),
+                    const SizedBox(height: 32),
                     _buildActionButtons(context, isDark, ref),
                     const SizedBox(height: 32),
                     Row(
@@ -567,6 +574,42 @@ class HomeScreen extends ConsumerWidget {
         if (context.mounted) context.push('/app-settings');
       }),
     ]);
+  }
+
+  Widget _buildQuickAction(
+    BuildContext context,
+    IconData icon,
+    String label,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        decoration: BoxDecoration(
+          color: AppColors.primaryPurple.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.primaryPurple.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: AppColors.primaryPurple),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.primaryPurple,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showOpeningBalanceDialog(BuildContext context, WidgetRef ref) {
