@@ -7,6 +7,7 @@ import 'package:activity/features/daily_tracker/presentation/pages/add_expense_s
 import 'package:activity/features/daily_tracker/presentation/pages/analytics_screen.dart';
 import 'package:activity/features/daily_tracker/presentation/pages/daily_expense_screen.dart';
 import 'package:activity/features/friends/presentation/pages/create_group_screen.dart';
+import 'package:activity/features/friends/presentation/pages/friends_list_screen.dart';
 import 'package:activity/features/home/presentation/pages/home_screen.dart';
 import 'package:activity/features/home/presentation/pages/notifications_screen.dart';
 import 'package:activity/features/onboarding/presentation/pages/walkthrough_screen.dart';
@@ -139,6 +140,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: '/friends',
+      builder: (context, state) => const FriendsListScreen(),
     ),
   ],
 );
