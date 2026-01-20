@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:activity/main.dart';
+import 'package:activity/app/activity_app.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {

@@ -1,4 +1,6 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/constants/app_routes.dart'; // Ensure it's there if needed, though this file uses pushReplacement with path string? No, used context.pushReplacement(AppRoutes...) or logic? Let's check imports.
+import 'package:activity/features/home/constants/home_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -67,7 +69,7 @@ class _ScanSimulationScreenState extends State<ScanSimulationScreen>
                         onPressed: () => context.pop(),
                       ),
                       const Text(
-                        'Scan Receipt',
+                        HomeStrings.scanReceipt,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -133,7 +135,7 @@ class _ScanSimulationScreenState extends State<ScanSimulationScreen>
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Point camera at receipt',
+                          HomeStrings.pointCamera,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                           ),
@@ -150,9 +152,14 @@ class _ScanSimulationScreenState extends State<ScanSimulationScreen>
                     onTap: () {
                       // Simulate capture
                       _controller.stop();
-                      context.pushReplacement('/add-expense', extra: false);
+                      context.pushReplacement(
+                        AppRoutes.addExpense,
+                        extra: false,
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Receipt scanned!')),
+                        const SnackBar(
+                          content: Text(HomeStrings.receiptScanned),
+                        ),
                       );
                     },
                     child: Container(

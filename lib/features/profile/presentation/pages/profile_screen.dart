@@ -1,4 +1,5 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/constants/app_routes.dart';
 import 'package:activity/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +28,7 @@ class ProfileScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => context.go('/home'),
+          onPressed: () => context.go(AppRoutes.home),
         ),
       ),
       body: Stack(
@@ -155,14 +156,14 @@ class ProfileScreen extends ConsumerWidget {
                   isDark,
                   Icons.group_add_outlined,
                   'Create New Group',
-                  onTap: () => context.push('/create-group'),
+                  onTap: () => context.push(AppRoutes.createGroup),
                 ),
                 _buildSettingsTile(
                   context,
                   isDark,
                   Icons.person_outline,
                   'Personal Information',
-                  onTap: () => context.push('/personal-info'),
+                  onTap: () => context.push(AppRoutes.personalInfo),
                 ),
 
                 _buildSettingsTile(
@@ -181,7 +182,7 @@ class ProfileScreen extends ConsumerWidget {
                   child: OutlinedButton.icon(
                     onPressed: () async {
                       await ref.read(authControllerProvider.notifier).signOut();
-                      if (context.mounted) context.go('/');
+                      if (context.mounted) context.go(AppRoutes.login);
                     },
                     icon: const Icon(Icons.logout),
                     label: const Text('Log Out'),
@@ -241,8 +242,8 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ],
         onDestinationSelected: (index) {
-          if (index == 0) context.go('/home');
-          if (index == 1) context.go('/split-bill');
+          if (index == 0) context.go(AppRoutes.home);
+          if (index == 1) context.go(AppRoutes.splitBill);
         },
       ),
     );
@@ -272,7 +273,7 @@ class ProfileScreen extends ConsumerWidget {
               try {
                 await ref.read(authControllerProvider.notifier).deleteAccount();
                 if (context.mounted) {
-                  context.go('/'); // Navigate to login
+                  context.go(AppRoutes.login); // Navigate to login
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Account deleted successfully'),

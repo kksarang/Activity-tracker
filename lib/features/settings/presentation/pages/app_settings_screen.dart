@@ -1,5 +1,6 @@
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/core/theme/theme_provider.dart';
+import 'package:activity/features/settings/constants/settings_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +31,7 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
           ? const Color(0xFF121212)
           : const Color(0xFFFAFAFA),
       appBar: AppBar(
-        title: const Text('App Settings'),
+        title: const Text(SettingsStrings.appSettings),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -38,10 +39,10 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          _buildSectionHeader('Preferences'),
+          _buildSectionHeader(SettingsStrings.preferences),
           _buildSwitchTile(
-            'Dark Mode',
-            'Use dark theme across the app',
+            SettingsStrings.darkMode,
+            SettingsStrings.darkModeDesc,
             isDarkModeSwitchOn,
             (val) {
               ref.read(themeProvider.notifier).toggleTheme(val);
@@ -49,38 +50,38 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
             icon: Icons.dark_mode_outlined,
           ),
           _buildSwitchTile(
-            'Notifications',
-            'Enable push notifications',
+            SettingsStrings.notifications,
+            SettingsStrings.notificationsDesc,
             _notifications,
             (val) => setState(() => _notifications = val),
             icon: Icons.notifications_none_rounded,
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('Security'),
+          _buildSectionHeader(SettingsStrings.security),
           _buildSwitchTile(
-            'Biometric Lock',
-            'Unlock with FaceID / Fingerprint',
+            SettingsStrings.biometricLock,
+            SettingsStrings.biometricLockDesc,
             _biometrics,
             (val) => setState(() => _biometrics = val),
             icon: Icons.fingerprint,
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('About'),
+          _buildSectionHeader(SettingsStrings.about),
           _buildListTile(
-            'Version',
+            SettingsStrings.version,
             '1.0.0 (Build 24)',
             onTap: () {},
             icon: Icons.info_outline,
           ),
           _buildListTile(
-            'Privacy Policy',
-            'Read our privacy policy',
+            SettingsStrings.privacyPolicy,
+            SettingsStrings.privacyPolicyDesc,
             onTap: () {},
             icon: Icons.privacy_tip_outlined,
           ),
           _buildListTile(
-            'Terms of Service',
-            'Read our terms of service',
+            SettingsStrings.termsOfService,
+            SettingsStrings.termsOfServiceDesc,
             onTap: () {},
             icon: Icons.description_outlined,
           ),
@@ -92,7 +93,7 @@ class _AppSettingsScreenState extends ConsumerState<AppSettingsScreen> {
                 // Show logout dialog
               },
               style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
-              child: const Text('Log Out'),
+              child: const Text(SettingsStrings.logOut),
             ),
           ),
         ],
