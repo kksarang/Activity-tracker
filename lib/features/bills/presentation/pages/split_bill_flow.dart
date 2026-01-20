@@ -1,4 +1,5 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/constants/app_routes.dart';
 import 'package:activity/features/bills/presentation/providers/split_bill_provider.dart';
 import 'package:activity/features/bills/presentation/widgets/steps/step_one_amount.dart';
 import 'package:activity/features/bills/presentation/widgets/steps/step_two_people.dart';
@@ -45,7 +46,7 @@ class _SplitBillFlowState extends ConsumerState<SplitBillFlow> {
       if (context.canPop()) {
         context.pop();
       } else {
-        context.go('/home');
+        context.go(AppRoutes.home);
       }
     }
   }
@@ -77,7 +78,7 @@ class _SplitBillFlowState extends ConsumerState<SplitBillFlow> {
             icon: const Icon(Icons.close, color: Colors.grey),
             onPressed: () {
               ref.read(splitBillProvider.notifier).reset();
-              context.go('/home');
+              context.go(AppRoutes.home);
             },
           ),
         ],
@@ -106,7 +107,7 @@ class _SplitBillFlowState extends ConsumerState<SplitBillFlow> {
                 StepFourReview(
                   onSubmit: () {
                     // TODO: Submit Logic
-                    context.go('/home');
+                    context.go(AppRoutes.home);
                   },
                 ),
               ],

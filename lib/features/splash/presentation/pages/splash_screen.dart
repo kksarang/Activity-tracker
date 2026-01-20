@@ -1,4 +1,5 @@
 import 'package:activity/core/theme/app_theme.dart';
+import 'package:activity/core/constants/app_routes.dart';
 import 'package:activity/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final user = ref.read(authStateProvider).value;
 
     if (user != null) {
-      context.go('/home');
+      context.go(AppRoutes.home);
     } else {
       final prefs = await SharedPreferences.getInstance();
 
@@ -38,9 +39,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       final seenWalkthrough = prefs.getBool('seenWalkthrough') ?? false;
 
       if (seenWalkthrough) {
-        context.go('/'); // Login
+        context.go(AppRoutes.login); // Login
       } else {
-        context.go('/walkthrough');
+        context.go(AppRoutes.walkthrough);
       }
     }
   }
