@@ -22,29 +22,27 @@ class FriendsRepositoryImpl implements FriendsRepository {
   }
 
   @override
-  Future<List<FriendModel>> getFriends() async {
+  Stream<List<FriendModel>> getFriends() {
     _checkAuth();
-    final snapshot = await _firestore
+    return _firestore
         .collection('friendships')
         .where('users', arrayContains: _currentUserId!)
         .where('status', isEqualTo: 'accepted')
-        .get();
-
-    return _mapSnapshotToFriends(snapshot);
+        .snapshots()
+        .asyncMap(_mapSnapshotToFriends);
   }
 
   @override
-  Future<List<FriendModel>> getFriendRequests() async {
+  Stream<List<FriendModel>> getFriendRequests() {
     _checkAuth();
     // Incoming requests: status 'pending' AND actionUserId is NOT me
-    final snapshot = await _firestore
+    return _firestore
         .collection('friendships')
         .where('users', arrayContains: _currentUserId!)
         .where('status', isEqualTo: 'pending')
         .where('actionUserId', isNotEqualTo: _currentUserId!)
-        .get();
-
-    return _mapSnapshotToFriends(snapshot);
+        .snapshots()
+        .asyncMap(_mapSnapshotToFriends);
   }
 
   Future<List<FriendModel>> _mapSnapshotToFriends(
@@ -144,7 +142,38 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
   @override
   Future<void> blockUser(String userId) async {
-    // TODO: Implement block logic similarly
+    _checkAuth();
+
+    // 1. Check if ANY relationship exists (pending or accepted)
+    final snapshot = await _firestore
+        .collection('friendships')
+        .where('users', arrayContains: _currentUserId!)
+        .get();
+
+    // Filter where other user is target
+    final doc = snapshot.docs
+        .cast<QueryDocumentSnapshot<Map<String, dynamic>>?>()
+        .firstWhere((d) {
+          final users = List<String>.from(d!.data()['users']);
+          return users.contains(userId);
+        }, orElse: () => null);
+
+    if (doc != null) {
+      // Update existing
+      await doc.reference.update({
+        'status': 'blocked',
+        'actionUserId': _currentUserId!,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Create new blocked doc (pre-emptive block)
+      await _firestore.collection('friendships').add({
+        'users': [_currentUserId!, userId],
+        'status': 'blocked',
+        'actionUserId': _currentUserId!,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
   }
 
   @override

@@ -29,17 +29,17 @@ class MockFriendsRepository implements FriendsRepository {
   ];
 
   @override
-  Future<List<FriendModel>> getFriends() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return _mockFriends
-        .where((f) => f.status == FriendStatus.accepted)
-        .toList();
+  Stream<List<FriendModel>> getFriends() {
+    return Stream.value(
+      _mockFriends.where((f) => f.status == FriendStatus.accepted).toList(),
+    );
   }
 
   @override
-  Future<List<FriendModel>> getFriendRequests() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return _mockFriends.where((f) => f.status == FriendStatus.pending).toList();
+  Stream<List<FriendModel>> getFriendRequests() {
+    return Stream.value(
+      _mockFriends.where((f) => f.status == FriendStatus.pending).toList(),
+    );
   }
 
   @override
