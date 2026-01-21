@@ -149,9 +149,25 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen>
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(friend.email, style: const TextStyle(fontSize: 12)),
-            trailing: IconButton(
+            trailing: PopupMenuButton(
               icon: const Icon(Icons.more_horiz),
-              onPressed: () {},
+              onSelected: (value) {
+                if (value == 'block') {
+                  ref.read(friendsProvider.notifier).blockUser(friend.id);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'block',
+                  child: Row(
+                    children: [
+                      Icon(Icons.block, color: Colors.red, size: 20),
+                      SizedBox(width: 8),
+                      Text('Block User', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
