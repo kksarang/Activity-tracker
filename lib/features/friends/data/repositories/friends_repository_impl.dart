@@ -13,13 +13,20 @@ class FriendsRepositoryImpl implements FriendsRepository {
     : _firestore = firestore ?? FirebaseFirestore.instance,
       _auth = auth ?? FirebaseAuth.instance;
 
-  String get _currentUserId => _auth.currentUser!.uid;
+  String? get _currentUserId => _auth.currentUser?.uid;
+
+  void _checkAuth() {
+    if (_currentUserId == null) {
+      throw Exception('User not logged in');
+    }
+  }
 
   @override
   Future<List<FriendModel>> getFriends() async {
+    _checkAuth();
     final snapshot = await _firestore
         .collection('friendships')
-        .where('users', arrayContains: _currentUserId)
+        .where('users', arrayContains: _currentUserId!)
         .where('status', isEqualTo: 'accepted')
         .get();
 
@@ -28,12 +35,13 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
   @override
   Future<List<FriendModel>> getFriendRequests() async {
+    _checkAuth();
     // Incoming requests: status 'pending' AND actionUserId is NOT me
     final snapshot = await _firestore
         .collection('friendships')
-        .where('users', arrayContains: _currentUserId)
+        .where('users', arrayContains: _currentUserId!)
         .where('status', isEqualTo: 'pending')
-        .where('actionUserId', isNotEqualTo: _currentUserId)
+        .where('actionUserId', isNotEqualTo: _currentUserId!)
         .get();
 
     return _mapSnapshotToFriends(snapshot);
@@ -48,7 +56,7 @@ class FriendsRepositoryImpl implements FriendsRepository {
     for (var doc in snapshot.docs) {
       final data = doc.data() as Map<String, dynamic>;
       final users = List<String>.from(data['users'] as List);
-      final friendId = users.firstWhere((id) => id != _currentUserId);
+      final friendId = users.firstWhere((id) => id != _currentUserId!);
       friendIds.add(friendId);
     }
 
@@ -73,6 +81,7 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
   @override
   Future<void> sendFriendRequest(String email) async {
+    _checkAuth();
     // 1. Find user by email
     final userQuery = await _firestore
         .collection('users')
@@ -85,14 +94,14 @@ class FriendsRepositoryImpl implements FriendsRepository {
     }
 
     final targetUserId = userQuery.docs.first.id;
-    if (targetUserId == _currentUserId) {
+    if (targetUserId == _currentUserId!) {
       throw Exception('Cannot add yourself');
     }
 
     // 2. Check if friendship already exists
     final existingCheck = await _firestore
         .collection('friendships')
-        .where('users', arrayContains: _currentUserId)
+        .where('users', arrayContains: _currentUserId!)
         .get();
 
     final alreadyConnected = existingCheck.docs.any((doc) {
@@ -106,19 +115,20 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
     // 3. Create Friendship Doc
     await _firestore.collection('friendships').add({
-      'users': [_currentUserId, targetUserId],
+      'users': [_currentUserId!, targetUserId],
       'status': 'pending',
-      'actionUserId': _currentUserId,
+      'actionUserId': _currentUserId!,
       'createdAt': FieldValue.serverTimestamp(),
     });
   }
 
   @override
   Future<void> acceptFriendRequest(String friendId) async {
+    _checkAuth();
     // Find the specific friendship doc
     final snapshot = await _firestore
         .collection('friendships')
-        .where('users', arrayContains: _currentUserId)
+        .where('users', arrayContains: _currentUserId!)
         .where('actionUserId', isEqualTo: friendId) // The other person sent it
         .where('status', isEqualTo: 'pending')
         .limit(1)
@@ -139,13 +149,14 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
   @override
   Future<InviteModel> generateInviteLink() async {
+    _checkAuth();
     final code = const Uuid().v4().substring(0, 6).toUpperCase();
     final expiresAt = DateTime.now().add(const Duration(days: 7));
 
     // Save to Firestore
     await _firestore.collection('invites').doc(code).set({
       'code': code,
-      'inviterId': _currentUserId,
+      'inviterId': _currentUserId!,
       'createdAt': FieldValue.serverTimestamp(),
       'expiresAt': Timestamp.fromDate(expiresAt),
       'maxUses': 10,
@@ -155,7 +166,7 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
     return InviteModel(
       code: code,
-      inviterId: _currentUserId,
+      inviterId: _currentUserId!,
       dynamicLink: 'https://activity.app/invite?c=$code',
       expiresAt: expiresAt,
     );
@@ -163,6 +174,7 @@ class FriendsRepositoryImpl implements FriendsRepository {
 
   @override
   Future<void> processInviteLink(String code) async {
+    _checkAuth();
     // 1. Validate Invite
     final inviteDoc = await _firestore.collection('invites').doc(code).get();
     if (!inviteDoc.exists) throw Exception('Invalid invite code');
@@ -170,14 +182,15 @@ class FriendsRepositoryImpl implements FriendsRepository {
     final data = inviteDoc.data()!;
     final inviterId = data['inviterId'] as String;
 
-    if (inviterId == _currentUserId)
+    if (inviterId == _currentUserId!) {
       throw Exception('Cannot accept your own invite');
+    }
 
     // 2. Create Friendship
     await _firestore.collection('friendships').add({
-      'users': [_currentUserId, inviterId],
+      'users': [_currentUserId!, inviterId],
       'status': 'accepted', // Direct accept for invites
-      'actionUserId': _currentUserId, // I accepted it
+      'actionUserId': _currentUserId!, // I accepted it
       'source': 'invite:$code',
       'createdAt': FieldValue.serverTimestamp(),
     });
