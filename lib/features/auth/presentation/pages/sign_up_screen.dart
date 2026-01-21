@@ -1,3 +1,4 @@
+import 'package:activity/core/network/api_result.dart';
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +45,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     // Listeners
     ref.listen(authControllerProvider, (previous, next) {
-      if (next.hasError) {
+      if (next is Failure) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error.toString()),
+            content: Text((next as Failure).message),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
           ),
         );
-      } else if (!next.isLoading && next.hasValue) {
+      } else if (next is Success) {
         // Success
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -61,13 +62,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             behavior: SnackBarBehavior.floating,
           ),
         );
-        context.go(
-          '/',
-        ); // Go to Login (or Home if auto-login, but typically verify first)
+        context.go('/'); // Go to Login
       }
     });
 
-    final isLoading = ref.watch(authControllerProvider).isLoading;
+    final isLoading = ref.watch(authControllerProvider) is Loading;
 
     return Scaffold(
       extendBodyBehindAppBar: true,

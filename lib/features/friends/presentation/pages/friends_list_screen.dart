@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -35,6 +36,20 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Listen for errors
+    ref.listen(friendsProvider, (previous, next) {
+      if (next.errorMessage != null &&
+          next.errorMessage != previous?.errorMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final state = ref.watch(friendsProvider);
 
@@ -210,6 +225,15 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen>
 class _InviteBottomSheet extends ConsumerWidget {
   const _InviteBottomSheet();
 
+  Future<void> _shareOnWhatsApp(String link) async {
+    final Uri url = Uri.parse(
+      'https://wa.me/?text=${Uri.encodeComponent(link)}',
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -249,7 +273,7 @@ class _InviteBottomSheet extends ConsumerWidget {
 
           if (invite == null)
             const CircularProgressIndicator()
-          else
+          else ...[
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -287,6 +311,27 @@ class _InviteBottomSheet extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () => _shareOnWhatsApp(invite.dynamicLink),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF25D366),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: const Icon(Icons.share),
+                label: const Text(
+                  'Share on WhatsApp',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ),
+          ],
 
           const SizedBox(height: 24),
           // Simulate receiving a deep link (For Demo)

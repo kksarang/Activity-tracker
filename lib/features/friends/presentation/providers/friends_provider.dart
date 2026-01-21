@@ -16,12 +16,14 @@ class FriendsState {
   final List<FriendModel> requests;
   final bool isLoading;
   final InviteModel? activeInvite;
+  final String? errorMessage;
 
   const FriendsState({
     this.friends = const [],
     this.requests = const [],
     this.isLoading = false,
     this.activeInvite,
+    this.errorMessage,
   });
 
   FriendsState copyWith({
@@ -29,12 +31,15 @@ class FriendsState {
     List<FriendModel>? requests,
     bool? isLoading,
     InviteModel? activeInvite,
+    String? errorMessage,
+    bool clearError = false,
   }) {
     return FriendsState(
       friends: friends ?? this.friends,
       requests: requests ?? this.requests,
       isLoading: isLoading ?? this.isLoading,
       activeInvite: activeInvite ?? this.activeInvite,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }
@@ -47,7 +52,7 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
   }
 
   Future<void> loadFriends() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       final friends = await _repository.getFriends();
       final requests = await _repository.getFriendRequests();
@@ -57,7 +62,10 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
         isLoading: false,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
     }
   }
 
@@ -67,20 +75,39 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       return;
     }
 
-    final invite = await _repository.generateInviteLink();
-    state = state.copyWith(activeInvite: invite);
+    try {
+      final invite = await _repository.generateInviteLink();
+      state = state.copyWith(activeInvite: invite, clearError: true);
+    } catch (e) {
+      state = state.copyWith(
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+    }
   }
 
   Future<void> acceptRequest(String userId) async {
-    await _repository.acceptFriendRequest(userId);
-    await loadFriends(); // Refresh list
+    try {
+      await _repository.acceptFriendRequest(userId);
+      await loadFriends(); // Refresh list
+    } catch (e) {
+      state = state.copyWith(
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+    }
   }
 
   // Debug method to simulate deep link
   Future<void> simulateDeepLink(String code) async {
-    state = state.copyWith(isLoading: true);
-    await _repository.processInviteLink(code);
-    await loadFriends();
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _repository.processInviteLink(code);
+      await loadFriends();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:activity/core/constants/app_routes.dart';
+import 'package:activity/core/network/api_result.dart';
 import 'package:activity/core/theme/app_theme.dart';
 import 'package:activity/features/auth/constants/auth_strings.dart';
 import 'package:activity/features/auth/presentation/providers/auth_provider.dart';
@@ -41,10 +42,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     // Listeners
     ref.listen(authControllerProvider, (previous, next) {
-      if (next.hasError) {
+      if (next is Failure) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error.toString()),
+            content: Text((next as Failure).message),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
           ),
