@@ -175,7 +175,7 @@ class ProfileScreen extends ConsumerWidget {
 
                 const SizedBox(height: 40),
 
-                // Log Out Button
+                // Log Out / Log In Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -184,8 +184,12 @@ class ProfileScreen extends ConsumerWidget {
                       await ref.read(authControllerProvider.notifier).signOut();
                       if (context.mounted) context.go(AppRoutes.login);
                     },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Log Out'),
+                    icon: Icon(
+                      (user?.isAnonymous ?? false) ? Icons.login : Icons.logout,
+                    ),
+                    label: Text(
+                      (user?.isAnonymous ?? false) ? 'Log In' : 'Log Out',
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primaryPurple,
                       side: const BorderSide(color: AppColors.primaryPurple),
@@ -199,21 +203,22 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
 
                 // Delete Account Button (User Request)
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: TextButton.icon(
-                    onPressed: () => _showDeleteAccountDialog(context, ref),
-                    icon: const Icon(Icons.delete_forever_rounded),
-                    label: const Text('Delete Account'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.redAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                if (user != null && !user.isAnonymous)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: TextButton.icon(
+                      onPressed: () => _showDeleteAccountDialog(context, ref),
+                      icon: const Icon(Icons.delete_forever_rounded),
+                      label: const Text('Delete Account'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
